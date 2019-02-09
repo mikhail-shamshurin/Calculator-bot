@@ -6,8 +6,8 @@ bot = telebot.TeleBot(BOT_TOKEN)
 
 TIMEOUT_CONNECTION = 5 # Таймаут переподключения
 
-WITHOUT_ICON = '' # Ссылка на иконку "c выражением"
-WITH_ICON = '' # Ссылка на иконку "без выражения"
+WITHOUT_ICON = 'https://raw.githubusercontent.com/6eremotuk01/Calculator-bot/master/img/without.jpg' # Ссылка на иконку "c выражением"
+WITH_ICON = 'https://raw.githubusercontent.com/6eremotuk01/Calculator-bot/master/img/with.jpg' # Ссылка на иконку "без выражения"
 
 # Сообщение при старте
 START_MESSAGE = """Отправь мне выражение, а я тебе скажу ответ)"""
@@ -54,6 +54,9 @@ def sin(float_):
 
 def tg(float_):
     return math.tan(float_)
+    
+def tan(float_):
+    return math.tan(float_)
 
 
 def ln(float_):
@@ -97,8 +100,8 @@ def answer_to_user(message):
         msg = bot.send_message(message.chat.id, HELP_MESSAGE, parse_mode='markdown')
 
     try:
-        answer = str(eval(message.text.lower()))
-        msg = bot.send_message(message.chat.id, message.text + ' = ' + answer)
+        answer = str(eval(message.text.lower().replace(' ', '')))
+        msg = bot.send_message(message.chat.id, message.text.lower().replace(' ', '') + ' = ' + answer)
             
     except SyntaxError:
         msg = bot.send_message(message.chat.id, 'Похоже, что вы написали что-то не так. \nИсравьте ошибку и повторите снова')
@@ -118,9 +121,9 @@ def inline_answer_to_user(inline_query):
     answer = 0
     answer_list = []
     try:
-        answer = str(eval(inline_query.query))
+        answer = str(eval(inline_query.query.lower().replace(' ', '')))
         answer_to_send = answer.replace('*', '\*')
-        query_to_send = inline_query.query.replace('*', '\*')
+        query_to_send = inline_query.query.replace('*', '\*').lower().replace(' ', '')
 
         answer_list.append(types.InlineQueryResultArticle(
             id = 0,
@@ -152,7 +155,7 @@ def inline_answer_to_user(inline_query):
         answer_list.append(types.InlineQueryResultArticle(
             id = 0,
             title = 'Калькулятор',
-            description='Чтобы посичтать введите выражение.\nЕсли вы хотите просмотреть справку, то напишите \"help\", но не отправляйте',
+            description='Чтобы посичтать выражение - введите его.\nЕсли вы хотите просмотреть справку, то перейдите в диалог со мной и напишите \"/help\"',
             input_message_content = types.InputTextMessageContent(message_text = 'Я хотел посчитать выражение, но нажал не туда')
         ))
     
